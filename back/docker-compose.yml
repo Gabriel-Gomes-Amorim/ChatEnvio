@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  postgres:
+    container_name: postgres_db_chatEnvio
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "${DATABASE_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - api_chat_envio
+
+  #api:
+  #  build:
+  #    context: .
+  #    dockerfile: Dockerfile.dev
+  #  container_name: nest_api
+  #  ports:
+  #    - '${API_PORT}:3000'
+  #  depends_on:
+  #    - mysql
+  #  volumes:
+  #    - .:/usr/app
+  #  networks:
+  #    - sistema_gerencimento_canais_modelos
+  #  env_file:
+  #    - .env
+
+volumes:
+  postgres_data:
+
+networks:
+  api_chat_envio:
+    driver: bridge
