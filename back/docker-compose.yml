@@ -28,7 +28,7 @@ services:
   #  volumes:
   #    - .:/usr/app
   #  networks:
-  #    - sistema_gerencimento_canais_modelos
+  #    - api_chat_envio
   #  env_file:
   #    - .env
 
