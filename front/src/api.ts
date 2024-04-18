@@ -11,7 +11,7 @@ const handleRequest = async (config: AxiosRequestConfig) => {
     return response.data;
   } catch (error) {
     console.error(error);
-    throw error; 
+    throw error;
   }
 };
 
@@ -27,7 +27,7 @@ export const chatService = {
   sendMessage: async (message: ChatMessageProps) => {
     const config: AxiosRequestConfig = {
       method: "POST",
-      url: "/message",
+      url: "/message/send",
       data: message,
     };
 
