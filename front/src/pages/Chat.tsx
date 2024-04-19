@@ -15,18 +15,6 @@ export default function ChatRoom() {
   const { messages, randomName } = useChat();
   const dispatch = useDispatch();
 
-  // TODO
-  /**
-   * Agora, é hora de aprimorar o armazenamento das mensagens! Atualmente,
-   * o ChatEnvio está registrando suas mensagens no estado do componente,
-   * o que não é ideal para uma aplicação destinada a atender milhares de usuários.
-   * Recomendo que adote uma abordagem mais escalável,
-   * como utilizar um gerenciador de estado como o Redux.
-   * Isso proporcionará uma gestão mais eficiente e otimizada das mensagens,
-   * garantindo um desempenho superior à medida que a aplicação cresce em escala.
-   */
-
-  // const [messages, setMessages] = useState<Array<ChatMessageProps>>([]);
   const dummy = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -45,16 +33,7 @@ export default function ChatRoom() {
     };
     const listener = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
-      // TODO addNewMessage
-      /**
-       *
-       * É hora de sintonizar os eventos no WebSocket!
-       * Implemente uma lógica de listener para capturar os eventos enviados pelo backend,
-       * adicionando as mensagens ao chat em tempo real. Essa implementação garantirá uma
-       * experiência dinâmica e instantânea, permitindo que as mensagens sejam exibidas no
-       * chat assim que forem recebidas do backend.
-       *
-       */
+
       if (data.type === "heartbeat" || data.message.senderName === randomName)
         return;
       dispatch(chatActions.add({ ...data.message, fromMe: false }));
@@ -97,25 +76,25 @@ export default function ChatRoom() {
     event.preventDefault();
 
     if (messageText && dummy.current) {
-      // TODO sendMessage
-      /**
-       * 
-        Desenvolva a lógica de envio da nova mensagem para o backend. 
-        Essa implementação garantirá que as mensagens enviadas sejam processadas de forma eficiente, 
-        permitindo uma comunicação contínua e confiável entre o frontend e o backend.
-       */
-      const data: ChatMessageProps = {
+      const newMessage: ChatMessageProps = {
         fromMe: true,
         senderName: randomName,
         text: messageText,
+        createdAt: new Date(),
       };
 
-      const res = await chatService.sendMessage(data);
-      dispatch(chatActions.add(res));
+      try {
+        const res = await chatService.sendMessage(newMessage);
 
-      setMessageText("");
+        dispatch(chatActions.add({ ...res, fromMe: true }));
 
-      dummy.current.scrollIntoView({ behavior: "smooth" });
+        setMessageText("");
+
+        dummy.current.scrollIntoView({ behavior: "smooth" });
+      } catch (error) {
+        console.error("Erro ao enviar a mensagem:", error);
+        message.error("Erro ao enviar a mensagem. Tente novamente.");
+      }
     }
   };
 
